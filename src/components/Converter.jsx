@@ -3,7 +3,7 @@ import Loader from "react-js-loader";
 import Result from "./Result";
 import ReactSelect from "./Select";
 import { fetchData } from "../http/fetchDataAPI";
-import { API_DATA } from "../utils/constatnt";
+import { API_DATA } from "../utils/constant";
 import { debounce, onlyNumberValidate } from "../utils/utilFunctions";
 import Input from "./Input";
 
