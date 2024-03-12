@@ -1,0 +1,179 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Poppins", sans-serif;
+}
+.main {
+  background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0)
+    ),
+    url("./assets/background.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  background-position: center;
+  padding: 15px;
+}
+.heading {
+  padding-top: 30px;
+  text-align: center;
+  color: #fff;
+  font-size: 50px;
+}
+.inputSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  gap: 10px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.24);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(7.3px);
+  -webkit-backdrop-filter: blur(7.3px);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+}
+.inputSection label {
+  font-weight: 600;
+  /* color: #fff; */
+}
+.inputSection input {
+  height: 45px;
+  width: 100%;
+  padding: 0 15px;
+  min-width: 120px;
+  font-size: 17px;
+  border-radius: 3px;
+  border: none;
+}
+.inputSection > div {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.inputSection .react-select-container {
+  height: 45px;
+  width: 100%;
+}
+.inputSection .react-select-container .react-select__control {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.inputSection
+  .react-select-container
+  .react-select__control
+  .react-select__value-container {
+  height: 100%;
+  padding: 0;
+  padding-left: 6px;
+}
+.inputSection
+  .react-select-container
+  .react-select__control
+  .react-select__value-container
+  .react-select__placeholder {
+  margin: 0;
+}
+.inputSection
+  .react-select-container
+  .react-select__control
+  .react-select__value-container
+  .react-select__input-container {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.inputSection button {
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  border: none;
+  align-self: flex-end;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+.inputSection button:hover {
+  background: #d6d4d4;
+}
+.loader {
+  min-width: 100%;
+}
+.loader .sl-spinner1 {
+  margin: auto;
+}
+.result {
+  min-width: 100%;
+}
+.result h3 {
+  color: #2d2d2d;
+}
+.result h3,
+h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+  /* color: #fff; */
+}
+.result img {
+  margin-right: 10px;
+}
+
+.result h3 img {
+  height: 35px;
+  max-width: 50px;
+}
+.result h5 img {
+  height: 40px;
+  max-width: 60px;
+}
+@media only screen and (max-width: 950px) {
+  .inputSection > div.amount {
+    min-width: 100%;
+  }
+  .result h3,
+  h1 {
+    align-items: flex-start;
+  }
+}
+@media only screen and (max-width: 580px) {
+  .inputSection > div.currencySelect {
+    min-width: 100%;
+  }
+  .inputSection > button.exchangeBtn {
+    transform: rotate(90deg);
+    margin-top: 25px;
+  }
+
+  .result h3,
+  .result h1 {
+    font-size: 16px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    word-break: break-all;
+  }
+  .result h3 {
+    font-size: 16px;
+  }
+  .result h1 {
+    font-size: 20px;
+  }
+}
