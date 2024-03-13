@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import Loader from "react-js-loader";
+
 import Result from "./Result";
 import ReactSelect from "./Select";
 import { fetchData } from "../http/fetchDataAPI";
@@ -16,6 +16,7 @@ const Converter = () => {
   const [amount, setAmount] = useState("0");
   const [isLoading, setIsLoading] = useState(false);
   const timeoutRef = useRef(null);
+  const [amountToShow, setAmountToShow] = useState("0");
 
   const calculateAnswer = useCallback(
     async ({
@@ -37,6 +38,7 @@ const Converter = () => {
       });
       setIsLoading(false);
       setResult(res ?? 0);
+      setAmountToShow(amountValue || amount);
     },
     [amount, toCurrency, fromCurrency, isLoading]
   );
@@ -66,6 +68,7 @@ const Converter = () => {
     if (inputVal === "") {
       setAmount("0");
       setResult(0);
+      setAmountToShow("0");
     } else if (onlyNumberValidate(inputVal)) {
       setIsLoading(true);
       setAmount(inputVal);
@@ -80,13 +83,7 @@ const Converter = () => {
     }
   };
 
-  const fetchCountryCodeData = useCallback(async () => {
-    const { url, method, headers } = API_DATA.fetchCountryCode;
-    const res = await fetchData({ url, method, headers });
-    setCountryCodeData(res);
-  }, []);
-
-  const makeOptions = useCallback(() => {
+  const makeOptions = useCallback((countryCodeData) => {
     setOptions(
       Object.entries(countryCodeData).map((contryData) => ({
         value: contryData[0],
@@ -97,15 +94,18 @@ const Converter = () => {
         )}/flat/64.png`,
       }))
     );
-  }, [countryCodeData]);
+  }, []);
+
+  const fetchCountryCodeData = useCallback(async () => {
+    const { url, method, headers } = API_DATA.fetchCountryCode;
+    const res = await fetchData({ url, method, headers });
+    setCountryCodeData(res);
+    makeOptions(res);
+  }, [makeOptions]);
 
   useEffect(() => {
     fetchCountryCodeData();
   }, [fetchCountryCodeData]);
-
-  useEffect(() => {
-    makeOptions();
-  }, [makeOptions]);
 
   return (
     <div className="inputSection">
@@ -114,6 +114,7 @@ const Converter = () => {
         id="amount"
         handleAmountChange={handleAmountChange}
         amount={amount}
+        isLoading={isLoading}
       />
       <ReactSelect
         label="From"
@@ -144,27 +145,14 @@ const Converter = () => {
         options={options}
         oppositeCurrency={fromCurrency}
       />
-      {isLoading && (
-        <div className="loader">
-          <Loader
-            type="spinner-cub"
-            bgColor={"white"}
-            color={"#fff"}
-            size={100}
-          />
-        </div>
-      )}
-      {!isLoading ? (
-        <Result
-          fromCurrency={fromCurrency}
-          toCurrency={toCurrency}
-          result={result}
-          countryCodeData={countryCodeData}
-          amount={amount}
-        />
-      ) : (
-        <></>
-      )}
+      <Result
+        fromCurrency={fromCurrency}
+        toCurrency={toCurrency}
+        result={result}
+        countryCodeData={countryCodeData}
+        amount={amountToShow.toString()}
+        isLoading={isLoading}
+      />
     </div>
   );
 };

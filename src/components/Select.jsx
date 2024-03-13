@@ -23,11 +23,10 @@ const ReactSelect = ({
   );
   return (
     <div className="currencySelect">
-      <label htmlFor={id}>{label}</label>
+      <label>{label}</label>
       <Select
         className="react-select-container"
         classNamePrefix="react-select"
-        id={id}
         formatOptionLabel={formatOptionLabel}
         value={currency}
         isOptionDisabled={(option) => option.value === oppositeCurrency}

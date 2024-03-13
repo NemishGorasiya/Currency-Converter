@@ -12,19 +12,19 @@ const Result = ({
   return (
     <div className="result">
       <h3>
-        <img
+        {/* <img
           src={`https://flagsapi.com/${fromCurrency.slice(0, 2)}/flat/64.png`}
           alt="flag"
-        />
+        /> */}
         <p>{` ${getSymbolFromCurrency(fromCurrency)} ${addCommasInAmount(
           parseFloat(amount)
         )} ${countryCodeData[fromCurrency]} =`}</p>
       </h3>
       <h1>
-        <img
+        {/* <img
           src={`https://flagsapi.com/${toCurrency.slice(0, 2)}/flat/64.png`}
           alt="flag"
-        />
+        /> */}
         {` ${getSymbolFromCurrency(toCurrency)} ${addCommasInAmount(result)} ${
           countryCodeData[toCurrency]
         }`}

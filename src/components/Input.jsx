@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
+import CustomLoader from "../UI/CustomLoader";
 
-const Input = ({ label, amount, id, handleAmountChange }) => {
+const Input = ({ label, amount, id, handleAmountChange, isLoading }) => {
   return (
     <div className="amount">
       <label htmlFor={id}>{label}</label>
@@ -10,6 +11,11 @@ const Input = ({ label, amount, id, handleAmountChange }) => {
         placeholder="Enter amount"
         onChange={handleAmountChange}
       />
+      {isLoading && (
+        <div className="loaderWrapper">
+          <CustomLoader />
+        </div>
+      )}
     </div>
   );
 };

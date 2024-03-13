@@ -34,7 +34,6 @@ body {
   flex-wrap: wrap;
   width: 100%;
   max-width: 1200px;
-  min-height: 308px;
   margin: auto;
   gap: 10px;
   padding: 20px;
@@ -44,10 +43,10 @@ body {
   backdrop-filter: blur(7.3px);
   -webkit-backdrop-filter: blur(7.3px);
   border: 1px solid rgba(255, 255, 255, 0.58);
+  transition: height 0.3s ease;
 }
 .inputSection label {
   font-weight: 600;
-  /* color: #fff; */
 }
 .inputSection input {
   height: 45px;
@@ -58,6 +57,17 @@ body {
   border-radius: 3px;
   border: none;
 }
+.inputSection .amount {
+  position: relative;
+}
+.inputSection .amount .loaderWrapper {
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  right: 7px;
+  bottom: 7px;
+}
+
 .inputSection > div {
   flex: 1;
   display: flex;
@@ -113,16 +123,11 @@ body {
 .inputSection button:hover {
   background: #d6d4d4;
 }
-.loader {
-  min-width: 100%;
-  min-height: 110px;
-}
-.loader .sl-spinner1 {
-  margin: auto;
-}
+
 .result {
   min-width: 100%;
-  min-height: 110px;
+  margin-top: 25px;
+  /* min-height: 110px; */
 }
 .result h3 {
   color: #2d2d2d;
@@ -135,18 +140,6 @@ h1 {
   margin-bottom: 5px;
   /* color: #fff; */
 }
-.result img {
-  margin-right: 10px;
-}
-
-.result h3 img {
-  height: 35px;
-  max-width: 50px;
-}
-.result h5 img {
-  height: 40px;
-  max-width: 60px;
-}
 @media only screen and (max-width: 950px) {
   .inputSection > div.amount {
     min-width: 100%;
@@ -157,6 +150,13 @@ h1 {
   }
 }
 @media only screen and (max-width: 580px) {
+  .main {
+    padding-top: 0;
+  }
+  .heading {
+    font-size: 25px;
+    margin-top: 0;
+  }
   .inputSection > div.currencySelect {
     min-width: 100%;
   }
