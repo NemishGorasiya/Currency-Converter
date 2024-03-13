@@ -17,7 +17,7 @@ const Input = ({ label, amount, id, handleAmountChange }) => {
 Input.propTypes = {
   label: PropTypes.string,
   id: PropTypes.string,
-  amount: PropTypes.number,
+  amount: PropTypes.string,
   handleAmountChange: PropTypes.func,
 };
 

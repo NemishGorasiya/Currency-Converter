@@ -13,7 +13,7 @@ const Converter = () => {
   const [fromCurrency, setFromCurrency] = useState("USD");
   const [toCurrency, setToCurrency] = useState("INR");
   const [result, setResult] = useState(0);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("0");
   const [isLoading, setIsLoading] = useState(false);
   const timeoutRef = useRef(null);
 
@@ -64,7 +64,7 @@ const Converter = () => {
       inputVal = inputVal.replace(/^0+/, "");
     }
     if (inputVal === "") {
-      setAmount(0);
+      setAmount("0");
       setResult(0);
     } else if (onlyNumberValidate(inputVal)) {
       setIsLoading(true);

@@ -33,7 +33,7 @@ export const onlyNumberValidate = (input) => {
 // };
 
 export const addCommasInAmount = (amount) => {
-  console.log(amount, typeof amount);
+  // console.log(amount, typeof amount);
   return amount.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
