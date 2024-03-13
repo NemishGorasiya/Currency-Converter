@@ -2,13 +2,9 @@ import PropTypes from "prop-types";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { addCommasInAmount } from "../utils/utilFunctions";
 
-const Result = ({
-  fromCurrency,
-  countryCodeData,
-  result,
-  toCurrency,
-  amount,
-}) => {
+const Result = (res) => {
+  // console.log("in result");
+  const { result, fromCurrency, toCurrency, amount } = res.result;
   return (
     <div className="result">
       <h3>
@@ -18,16 +14,16 @@ const Result = ({
         /> */}
         <p>{` ${getSymbolFromCurrency(fromCurrency)} ${addCommasInAmount(
           parseFloat(amount)
-        )} ${countryCodeData[fromCurrency]} =`}</p>
+        )} ${fromCurrency} =`}</p>
       </h3>
       <h1>
         {/* <img
           src={`https://flagsapi.com/${toCurrency.slice(0, 2)}/flat/64.png`}
           alt="flag"
         /> */}
-        {` ${getSymbolFromCurrency(toCurrency)} ${addCommasInAmount(result)} ${
-          countryCodeData[toCurrency]
-        }`}
+        {` ${getSymbolFromCurrency(toCurrency)} ${addCommasInAmount(
+          result
+        )} ${toCurrency}`}
       </h1>
     </div>
   );
@@ -35,8 +31,7 @@ const Result = ({
 
 Result.propTypes = {
   fromCurrency: PropTypes.string,
-  countryCodeData: PropTypes.object,
-  result: PropTypes.number,
+  result: PropTypes.object,
   toCurrency: PropTypes.string,
   amount: PropTypes.string,
 };

@@ -8,7 +8,7 @@ export const fetchData = async ({ url, headers, method = "GET" }) => {
     const result = await response.text();
     const data = JSON.parse(result);
     if (data.success) {
-      return data.result;
+      return data;
     }
   } catch (error) {
     console.error(error);

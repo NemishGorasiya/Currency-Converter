@@ -53,7 +53,6 @@ ReactSelect.propTypes = {
   label: PropTypes.string,
   handleSelect: PropTypes.func,
   options: PropTypes.array,
-  oppositeCurrency: PropTypes.string,
   userInput: PropTypes.object,
 };
 

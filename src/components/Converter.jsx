@@ -1,98 +1,112 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 
 import Result from "./Result";
 import ReactSelect from "./Select";
 import { fetchData } from "../http/fetchDataAPI";
 import { API_DATA } from "../utils/constant";
-import { debounce, onlyNumberValidate } from "../utils/utilFunctions";
 import Input from "./Input";
+import { debounce } from "../utils/utilFunctions";
 
 const INITIAL_STATE = {
   fromCurrency: "USD",
   toCurrency: "INR",
   amount: "",
 };
+const INITIAL_RESULT_STATE = {
+  fromCurrency: "USD",
+  toCurrency: "INR",
+  amount: "",
+  result: 0,
+};
 
 const reducer = (state, action) => {
   if (action.type === "updateFromCurrency") {
-    console.log("updateFRom");
-    console.log(state);
+    return { ...state, fromCurrency: action.payload };
   }
   if (action.type === "updateToCurrency") {
-    console.log("updateTo");
-    console.log(state);
+    return { ...state, toCurrency: action.payload };
   }
   if (action.type === "updateCurrencyAmount") {
-    console.log("updateAmount");
-    console.log(state);
+    return { ...state, amount: action.payload };
   }
   if (action.type === "inverseCurrency") {
-    console.log("inverse");
-    console.log(state);
+    return {
+      ...state,
+      fromCurrency: state.toCurrency,
+      toCurrency: state.fromCurrency,
+    };
   }
-  return INITIAL_STATE;
+  return { ...state };
 };
 
 const Converter = () => {
   const [userInput, dispatch] = useReducer(reducer, INITIAL_STATE);
-  const [countryCodeData, setCountryCodeData] = useState({});
   const [options, setOptions] = useState([]);
-  const [result, setResult] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  // const timeoutRef = useRef(null);
+  const [result, setResult] = useState(INITIAL_RESULT_STATE);
 
-  // const calculateAnswer = useCallback(
-  //   async ({
-  //     amountValue = 0,
-  //     toCurrencyValue = "",
-  //     fromCurrencyValue = "",
-  //   }) => {
-  //     const url = `https://currency-converter-pro1.p.rapidapi.com/convert?from=${
-  //       fromCurrencyValue || fromCurrency
-  //     }&to=${toCurrencyValue || toCurrency}&amount=${amountValue || amount}`;
-  //     const { method, headers } = API_DATA.fetchResult;
-  //     if (!isLoading) {
-  //       setIsLoading(true);
-  //     }
-  //     const res = await fetchData({
-  //       url: url,
-  //       method: method,
-  //       headers: headers,
-  //     });
-  //     setIsLoading(false);
-  //     setResult(res ?? 0);
-  //     setAmountToShow(amountValue || amount);
-  //   },
-  //   [amount, toCurrency, fromCurrency, isLoading]
-  // );
+  const calculateCurrency = useCallback(
+    async ({
+      fromCurrency = userInput.fromCurrency,
+      toCurrency = userInput.toCurrency,
+      amount = userInput.amount,
+    }) => {
+      const url = `https://currency-converter-pro1.p.rapidapi.com/convert?from=${fromCurrency}&to=${toCurrency}&amount=${amount}`;
+      const { method, headers } = API_DATA.fetchResult;
+      const res = await fetchData({
+        url: url,
+        method: method,
+        headers: headers,
+      });
+      const resRequest = res.request;
+      setResult({
+        fromCurrency: resRequest.from,
+        toCurrency: resRequest.to,
+        amount: resRequest.amount,
+        result: res.result,
+      });
+    },
+    [userInput]
+  );
+
+  const handleDebounce = useCallback(
+    (value) => {
+      debounce(calculateCurrency(value), 1000);
+    },
+    [calculateCurrency]
+  );
 
   const handleSelectFromCurrency = (fromCurrency) => {
     dispatch({
-      type: "updateToCurrency",
-      payload: fromCurrency,
-    });
-  };
-  const handleSelectToCurrency = () => {
-    dispatch({
       type: "updateFromCurrency",
+      payload: fromCurrency.currencyCode,
     });
+    handleDebounce({ fromCurrency: fromCurrency.currencyCode });
   };
-  const handleInverseToandFrom = () => {
+  const handleSelectToCurrency = (toCurrency) => {
+    dispatch({
+      type: "updateToCurrency",
+      payload: toCurrency.currencyCode,
+    });
+    handleDebounce({ toCurrency: toCurrency.currencyCode });
+  };
+  const handleInverseCurrency = () => {
     dispatch({
       type: "inverseCurrency",
     });
   };
-  const handleAmountChange = () => {
+  const handleAmountChange = (amount) => {
     dispatch({
       type: "updateCurrencyAmount",
+      payload: amount,
     });
+    handleDebounce({ amount: amount });
   };
 
   const makeOptions = useCallback((countryCodeData) => {
     setOptions(
       Object.entries(countryCodeData).map((contryData) => ({
-        value: contryData[0],
-        label: contryData[1],
+        currencyCode: contryData[0],
+        currencyName: contryData[1],
         flagImage: `https://flagsapi.com/${contryData[0].slice(
           0,
           2
@@ -104,8 +118,7 @@ const Converter = () => {
   const fetchCountryCodeData = useCallback(async () => {
     const { url, method, headers } = API_DATA.fetchCountryCode;
     const res = await fetchData({ url, method, headers });
-    setCountryCodeData(res);
-    makeOptions(res);
+    makeOptions(res.result);
   }, [makeOptions]);
 
   useEffect(() => {
@@ -117,6 +130,7 @@ const Converter = () => {
       <Input
         label="Amount"
         id="amount"
+        userInput={userInput}
         handleAmountChange={handleAmountChange}
       />
       <ReactSelect
@@ -126,7 +140,7 @@ const Converter = () => {
         userInput={userInput}
         options={options}
       />
-      <button className="exchangeBtn" onClick={handleInverseToandFrom}>
+      <button className="exchangeBtn" onClick={handleInverseCurrency}>
         <i className="fa-solid fa-arrow-right-arrow-left"></i>
       </button>
       <ReactSelect
@@ -136,7 +150,7 @@ const Converter = () => {
         userInput={userInput}
         options={options}
       />
-      {/* <Result /> */}
+      <Result result={{ ...result }} />
     </div>
   );
 };

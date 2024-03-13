@@ -1,7 +1,14 @@
 import PropTypes from "prop-types";
-import CustomLoader from "../UI/CustomLoader";
+import { useState } from "react";
+// import CustomLoader from "../UI/CustomLoader";
 
-const Input = ({ label, amount, id, handleAmountChange, isLoading }) => {
+const Input = ({ label, id, userInput, handleAmountChange }) => {
+  const [amount, setAmount] = useState("");
+  // console.log("userInput", userInput);
+  const handleInput = ({ target: { value } }) => {
+    setAmount(value);
+    handleAmountChange(value);
+  };
   return (
     <div className="amount">
       <label htmlFor={id}>{label}</label>
@@ -9,13 +16,12 @@ const Input = ({ label, amount, id, handleAmountChange, isLoading }) => {
         id={id}
         value={amount}
         placeholder="Enter amount"
-        onChange={handleAmountChange}
+        onChange={handleInput}
       />
-      {isLoading && (
-        <div className="loaderWrapper">
+
+      {/* <div className="loaderWrapper">
           <CustomLoader />
-        </div>
-      )}
+        </div> */}
     </div>
   );
 };
@@ -23,8 +29,8 @@ const Input = ({ label, amount, id, handleAmountChange, isLoading }) => {
 Input.propTypes = {
   label: PropTypes.string,
   id: PropTypes.string,
-  amount: PropTypes.string,
   handleAmountChange: PropTypes.func,
+  userInput: PropTypes.object,
 };
 
 export default Input;

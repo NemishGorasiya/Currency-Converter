@@ -9,6 +9,7 @@
 // };
 
 export function debounce(func, timeoutRef, delay = 500) {
+  console.log("called debounce");
   return function (...args) {
     clearTimeout(timeoutRef.current);
 
