@@ -1,15 +1,8 @@
 import Select from "react-select";
 import PropTypes from "prop-types";
 
-const ReactSelect = ({
-  label,
-  id,
-  currency,
-  handleSelect,
-  options,
-  oppositeCurrency,
-}) => {
-  const formatOptionLabel = ({ value, label, flagImage }) => (
+const ReactSelect = ({ label, handleSelect, options, userInput }) => {
+  const formatOptionLabel = ({ currencyCode, currencyName, flagImage }) => (
     <div style={{ display: "flex", alignItems: "center" }}>
       <img
         style={{ height: "35px", width: "35px" }}
@@ -17,10 +10,27 @@ const ReactSelect = ({
         alt="flag"
       />
       <div style={{ marginLeft: "6px" }}>
-        {label} {`(${value})`}
+        {currencyName} {`(${currencyCode})`}
       </div>
     </div>
   );
+
+  let ownCurrency;
+  let oppositeCurrency;
+  if (label === "To") {
+    ownCurrency =
+      options[
+        options.findIndex((option) => option.value === userInput.toCurrency)
+      ];
+    oppositeCurrency = userInput.fromCurrency;
+  } else {
+    ownCurrency =
+      options[
+        options.findIndex((option) => option.value === userInput.fromCurrency)
+      ];
+    oppositeCurrency = userInput.toCurrency;
+  }
+
   return (
     <div className="currencySelect">
       <label>{label}</label>
@@ -28,10 +38,10 @@ const ReactSelect = ({
         className="react-select-container"
         classNamePrefix="react-select"
         formatOptionLabel={formatOptionLabel}
-        value={currency}
+        value={ownCurrency}
         isOptionDisabled={(option) => option.value === oppositeCurrency}
         onChange={(selectedOption) => {
-          handleSelect(selectedOption.value);
+          handleSelect(selectedOption);
         }}
         options={options}
       />
@@ -41,11 +51,10 @@ const ReactSelect = ({
 
 ReactSelect.propTypes = {
   label: PropTypes.string,
-  id: PropTypes.string,
-  currency: PropTypes.object,
   handleSelect: PropTypes.func,
   options: PropTypes.array,
   oppositeCurrency: PropTypes.string,
+  userInput: PropTypes.object,
 };
 
 export default ReactSelect;
