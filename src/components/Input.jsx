@@ -2,12 +2,12 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 // import CustomLoader from "../UI/CustomLoader";
 
-const Input = ({ label, id, userInput, handleAmountChange }) => {
+const Input = ({ label, id, handleAmountChange }) => {
   const [amount, setAmount] = useState("");
   // console.log("userInput", userInput);
   const handleInput = ({ target: { value } }) => {
     setAmount(value);
-    handleAmountChange(value);
+    handleAmountChange({ amount: value });
   };
   return (
     <div className="amount">

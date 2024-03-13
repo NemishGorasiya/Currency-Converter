@@ -8,12 +8,14 @@
 //   };
 // };
 
-export function debounce(func, timeoutRef, delay = 500) {
+export function debounce(func, delay = 500) {
   console.log("called debounce");
-  return function (...args) {
-    clearTimeout(timeoutRef.current);
+  let timer;
 
-    timeoutRef.current = setTimeout(() => {
+  return function (...args) {
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
       func(...args);
     }, delay);
   };

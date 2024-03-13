@@ -17,19 +17,27 @@ const ReactSelect = ({ label, handleSelect, options, userInput }) => {
 
   let ownCurrency;
   let oppositeCurrency;
+  // console.log(options);
+  // console.log(userInput);
   if (label === "To") {
     ownCurrency =
       options[
-        options.findIndex((option) => option.value === userInput.toCurrency)
+        options.findIndex(
+          (option) => option.currencyCode === userInput.toCurrency
+        )
       ];
+    // console.log("own curr", ownCurrency);
     oppositeCurrency = userInput.fromCurrency;
   } else {
     ownCurrency =
       options[
-        options.findIndex((option) => option.value === userInput.fromCurrency)
+        options.findIndex(
+          (option) => option.currencyCode === userInput.fromCurrency
+        )
       ];
     oppositeCurrency = userInput.toCurrency;
   }
+  // console.log("own curr", ownCurrency);
 
   return (
     <div className="currencySelect">
