@@ -2,7 +2,11 @@ import Select from "react-select";
 import PropTypes from "prop-types";
 
 const ReactSelect = ({ label, handleSelect, options, userInput }) => {
-  const formatOptionLabel = ({ currencyCode, currencyName, flagImage }) => (
+  const formatOptionLabel = ({
+    currencyCode,
+    countryCurrencyName,
+    flagImage,
+  }) => (
     <div style={{ display: "flex", alignItems: "center" }}>
       <img
         style={{ height: "35px", width: "35px" }}
@@ -10,34 +14,32 @@ const ReactSelect = ({ label, handleSelect, options, userInput }) => {
         alt="flag"
       />
       <div style={{ marginLeft: "6px" }}>
-        {currencyName} {`(${currencyCode})`}
+        {countryCurrencyName} {`(${currencyCode})`}
       </div>
     </div>
   );
 
   let ownCurrency;
   let oppositeCurrency;
-  // console.log(options);
-  // console.log(userInput);
+
   if (label === "To") {
     ownCurrency =
       options[
         options.findIndex(
-          (option) => option.currencyCode === userInput.toCurrency
+          (option) => option.currencyCode === userInput.toCurrency.currencyCode
         )
       ];
-    // console.log("own curr", ownCurrency);
     oppositeCurrency = userInput.fromCurrency;
   } else {
     ownCurrency =
       options[
         options.findIndex(
-          (option) => option.currencyCode === userInput.fromCurrency
+          (option) =>
+            option.currencyCode === userInput.fromCurrency.currencyCode
         )
       ];
     oppositeCurrency = userInput.toCurrency;
   }
-  // console.log("own curr", ownCurrency);
 
   return (
     <div className="currencySelect">
@@ -47,7 +49,9 @@ const ReactSelect = ({ label, handleSelect, options, userInput }) => {
         classNamePrefix="react-select"
         formatOptionLabel={formatOptionLabel}
         value={ownCurrency}
-        isOptionDisabled={(option) => option.value === oppositeCurrency}
+        isOptionDisabled={(option) =>
+          option.currencyCode === oppositeCurrency.currencyCode
+        }
         onChange={(selectedOption) => {
           handleSelect(selectedOption);
         }}

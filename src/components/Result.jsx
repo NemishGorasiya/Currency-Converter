@@ -3,7 +3,6 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { addCommasInAmount } from "../utils/utilFunctions";
 
 const Result = (res) => {
-  // console.log("in result");
   const { result, fromCurrency, toCurrency, amount } = res.result;
   return (
     <div className="result">
@@ -12,18 +11,20 @@ const Result = (res) => {
           src={`https://flagsapi.com/${fromCurrency.slice(0, 2)}/flat/64.png`}
           alt="flag"
         /> */}
-        <p>{` ${getSymbolFromCurrency(fromCurrency)} ${addCommasInAmount(
-          parseFloat(amount)
-        )} ${fromCurrency} =`}</p>
+        <p>{` ${getSymbolFromCurrency(
+          fromCurrency.currencyCode
+        )} ${addCommasInAmount(amount === "" ? 0 : parseFloat(amount))} ${
+          fromCurrency.countryCurrencyName
+        } =`}</p>
       </h3>
       <h1>
         {/* <img
           src={`https://flagsapi.com/${toCurrency.slice(0, 2)}/flat/64.png`}
           alt="flag"
         /> */}
-        {` ${getSymbolFromCurrency(toCurrency)} ${addCommasInAmount(
-          result
-        )} ${toCurrency}`}
+        {` ${getSymbolFromCurrency(
+          toCurrency.currencyCode
+        )} ${addCommasInAmount(result)} ${toCurrency.countryCurrencyName}`}
       </h1>
     </div>
   );

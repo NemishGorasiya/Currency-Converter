@@ -1,13 +1,15 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { onlyNumberValidate } from "../utils/utilFunctions";
 // import CustomLoader from "../UI/CustomLoader";
 
 const Input = ({ label, id, handleAmountChange }) => {
   const [amount, setAmount] = useState("");
-  // console.log("userInput", userInput);
   const handleInput = ({ target: { value } }) => {
-    setAmount(value);
-    handleAmountChange({ amount: value });
+    if (onlyNumberValidate(value)) {
+      setAmount(value);
+      handleAmountChange({ amount: value });
+    }
   };
   return (
     <div className="amount">

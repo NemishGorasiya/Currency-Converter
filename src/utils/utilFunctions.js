@@ -9,7 +9,6 @@
 // };
 
 export function debounce(func, delay = 500) {
-  console.log("called debounce");
   let timer;
 
   return function (...args) {
@@ -36,9 +35,8 @@ export const onlyNumberValidate = (input) => {
 // };
 
 export const addCommasInAmount = (amount) => {
-  // console.log(amount, typeof amount);
   return amount.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });
 };

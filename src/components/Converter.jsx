@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 
 import Result from "./Result";
 import ReactSelect from "./Select";
@@ -6,40 +6,14 @@ import { fetchData } from "../http/fetchDataAPI";
 import { API_DATA } from "../utils/constant";
 import Input from "./Input";
 import { debounce } from "../utils/utilFunctions";
-
-const INITIAL_STATE = {
-  fromCurrency: "USD",
-  toCurrency: "INR",
-  amount: "",
-  result: 0,
-};
-
-const reducer = (state, action) => {
-  if (action.type === "updateFromCurrency") {
-    return { ...state, fromCurrency: action.payload };
-  }
-  if (action.type === "updateToCurrency") {
-    return { ...state, toCurrency: action.payload };
-  }
-  if (action.type === "updateCurrencyAmount") {
-    return { ...state, amount: action.payload };
-  }
-  if (action.type === "inverseCurrency") {
-    return {
-      ...state,
-      fromCurrency: state.toCurrency,
-      toCurrency: state.fromCurrency,
-    };
-  }
-  if (action.type === "updateResult") {
-    return { ...state, ...action.payload };
-  }
-  return { ...state };
-};
+import useLocalStorage from "../hooks/localStorage.jsx";
+import { INITIAL_STATE } from "../utils/constant.js";
+import { reducer } from "../utils/reducer.js";
+import { calcResult } from "../utils/calcResult.js";
 
 const Converter = () => {
   const [userInput, dispatch] = useReducer(reducer, INITIAL_STATE);
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useLocalStorage("countryCurrencyData", []);
 
   const calculateCurrency = useCallback(
     async ({
@@ -47,13 +21,17 @@ const Converter = () => {
       toCurrency = userInput.toCurrency,
       amount = userInput.amount,
     }) => {
-      const url = `https://currency-converter-pro1.p.rapidapi.com/convert?from=${fromCurrency.currencyCode}&to=${toCurrency.currencyCode}&amount=${amount}`;
-      const { method, headers } = API_DATA.fetchResult;
-      const res = await fetchData({
-        url: url,
-        method: method,
-        headers: headers,
-      });
+      if (amount === "") {
+        dispatch({
+          type: "updateResult",
+          payload: {
+            amount: "",
+            result: 0,
+          },
+        });
+        return;
+      }
+      const res = await calcResult(fromCurrency, toCurrency, amount);
       const resRequest = res.request;
       dispatch({
         type: "updateResult",
@@ -66,7 +44,9 @@ const Converter = () => {
     [userInput.amount, userInput.fromCurrency, userInput.toCurrency]
   );
 
-  const handleDebounce = useCallback(debounce(calculateCurrency, 1000), []);
+  const handleDebounce = useCallback(debounce(calculateCurrency, 500), [
+    calculateCurrency,
+  ]);
 
   const handleSelectFromCurrency = useCallback(
     (fromCurrency) => {
@@ -79,39 +59,51 @@ const Converter = () => {
     [calculateCurrency]
   );
 
-  const handleSelectToCurrency = (toCurrency) => {
-    dispatch({
-      type: "updateToCurrency",
-      payload: toCurrency,
-    });
-    calculateCurrency({ toCurrency: toCurrency });
-  };
+  const handleSelectToCurrency = useCallback(
+    (toCurrency) => {
+      dispatch({
+        type: "updateToCurrency",
+        payload: toCurrency,
+      });
+      calculateCurrency({ toCurrency: toCurrency });
+    },
+    [calculateCurrency]
+  );
 
   const handleInverseCurrency = () => {
     dispatch({
       type: "inverseCurrency",
     });
-    calculateCurrency();
+
+    calculateCurrency({
+      fromCurrency: userInput.toCurrency,
+      toCurrency: userInput.fromCurrency,
+    });
   };
 
-  const makeOptions = useCallback((countryCodeData) => {
-    setOptions(
-      Object.entries(countryCodeData).map((contryData) => ({
-        currencyCode: contryData[0],
-        currencyName: contryData[1],
-        flagImage: `https://flagsapi.com/${contryData[0].slice(
-          0,
-          2
-        )}/flat/64.png`,
-      }))
-    );
-  }, []);
+  const makeOptions = useCallback(
+    (countryCodeData) => {
+      setOptions(
+        Object.entries(countryCodeData).map((contryData) => ({
+          currencyCode: contryData[0],
+          countryCurrencyName: contryData[1],
+          flagImage: `https://flagsapi.com/${contryData[0].slice(
+            0,
+            2
+          )}/flat/64.png`,
+        }))
+      );
+    },
+    [setOptions]
+  );
 
   const fetchCountryCodeData = useCallback(async () => {
-    const { url, method, headers } = API_DATA.fetchCountryCode;
-    const res = await fetchData({ url, method, headers });
-    makeOptions(res.result);
-  }, [makeOptions]);
+    if (options.length === 0) {
+      const { url, method, headers } = API_DATA.fetchCountryCode;
+      const res = await fetchData({ url, method, headers });
+      makeOptions(res.result);
+    }
+  }, [makeOptions, options.length]);
 
   useEffect(() => {
     fetchCountryCodeData();
